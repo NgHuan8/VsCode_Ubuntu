@@ -5,9 +5,9 @@
 #include <arpa/inet.h>
 
 typedef struct {
-    char mssv[10];
+    char mssv[20];
     char ho_ten[50];
-    char ngay_sinh[11];
+    char ngay_sinh[20];
     float diem_tb;
 } SinhVien;
 
@@ -18,23 +18,45 @@ int main(int argc, char *argv[]) {
     }
 
     int client_sk = socket(AF_INET, SOCK_STREAM, 0);
-    struct sockaddr_in addr;
-    addr.sin_family = AF_INET;
-    addr.sin_addr.s_addr = inet_addr(argv[1]);
-    addr.sin_port = htons(atoi(argv[2]));
+    struct sockaddr_in s_addr;
+    s_addr.sin_family = AF_INET;
+    s_addr.sin_addr.s_addr = inet_addr(argv[1]);
+    s_addr.sin_port = htons(atoi(argv[2]));
 
-    connect(client_sk, (struct sockaddr *)&addr, sizeof(addr));
+    if (connect(client_sk, (struct sockaddr *)&s_addr, sizeof(s_addr)) == -1) {
+        perror("Kết nối thất bại");
+        return 1;
+    }
 
-    SinhVien sv;
-    printf("MSSV: "); scanf("%s", sv.mssv); getchar();
-    printf("Họ tên: "); fgets(sv.ho_ten, sizeof(sv.ho_ten), stdin);
-    sv.ho_ten[strcspn(sv.ho_ten, "\n")] = 0; // Xóa ký tự xuống dòng
-    printf("Ngày sinh (YYYY-MM-DD): "); scanf("%s", sv.ngay_sinh);
-    printf("Điểm TB: "); scanf("%f", &sv.diem_tb);
+    while (1) {
+        SinhVien sv;
+        memset(&sv, 0, sizeof(sv));
 
-    // Gửi toàn bộ struct (đóng gói dữ liệu) [cite: 14]
-    send(client_sk, &sv, sizeof(sv), 0);
+        printf("\nNhập MSSV (gõ 'exit' để dừng): ");
+        scanf("%s", sv.mssv);
 
+        // Nếu gõ exit, gửi tín hiệu thoát cho server rồi break
+        if (strcmp(sv.mssv, "exit") == 0) {
+            send(client_sk, &sv, sizeof(sv), 0);
+            break;
+        }
+
+        getchar(); // Xóa bộ đệm
+        printf("Nhập Họ tên: ");
+        fgets(sv.ho_ten, sizeof(sv.ho_ten), stdin);
+        sv.ho_ten[strcspn(sv.ho_ten, "\n")] = 0; // Xóa \n
+
+        printf("Nhập Ngày sinh (YYYY-MM-DD): ");
+        scanf("%s", sv.ngay_sinh);
+
+        printf("Nhập Điểm TB: ");
+        scanf("%f", &sv.diem_tb);
+
+        // Gửi toàn bộ struct sang Server 
+        send(client_sk, &sv, sizeof(sv), 0);
+    }
+
+    printf("Đã đóng kết nối.\n");
     close(client_sk);
     return 0;
 }
