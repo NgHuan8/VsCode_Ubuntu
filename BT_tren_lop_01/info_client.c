@@ -39,15 +39,12 @@ int main(int argc, char *argv[]) {
     }
 
     // 1. Lấy và gửi tên thư mục hiện tại
-    char cwd[256]; // Buffer để lưu đường dẫn thư mục hiện tại
-    if (getcwd(cwd, sizeof(cwd)) != NULL) { 
-        char *dir_name = strrchr(cwd, '/'); // Lấy phần tên sau dấu / cuối cùng
-        if (dir_name) dir_name++; else dir_name = cwd;
-        
-        printf("Đang gửi tên thư mục: %s\n", dir_name);
-        send_data(client_sk, dir_name, 0, 1); 
+    char cwd[256];
+    if (getcwd(cwd, sizeof(cwd)) != NULL) {
+        // Gửi nguyên đường dẫn đầy đủ thay vì cắt tên thư mục
+        printf("Đang gửi đường dẫn: %s\n", cwd);
+        send_data(client_sk, cwd, 0, 1); 
     }
-
 
     // 2. Duyệt và gửi danh sách tập tin
     DIR *d = opendir("."); 

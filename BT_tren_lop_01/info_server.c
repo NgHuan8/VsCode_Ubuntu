@@ -41,32 +41,31 @@ int main(int argc, char *argv[]) {
         return 1;
     }
 
-    //1. NHẬN TÊN THƯ MỤC
+    // Bước 1: Nhận và in đường dẫn đầy đủ
     unsigned char name_len;
     if (recv(client_sk, &name_len, 1, 0) > 0) {
-        char dir_name[256];
-        recv(client_sk, dir_name, name_len, 0);
-        dir_name[name_len] = '\0';
-        printf("--- THƯ MỤC HIỆN TẠI: %s ---\n", dir_name);
-        printf("%-30s | %s\n", "Tên tập tin", "Kích thước (bytes)");
+        char dir_path[256];
+        recv(client_sk, dir_path, name_len, 0);
+        dir_path[name_len] = '\0';
+        
+        // In đường dẫn đầy đủ theo ảnh
+        printf("%s\n\n", dir_path); 
     }
 
-    //2. NHẬN DANH SÁCH TẬP TIN
+    // Bước 2: Nhận và in danh sách file theo định dạng "tên - kích thước bytes"
     while (recv(client_sk, &name_len, 1, 0) > 0) {
-        if (name_len == 0) break; // Byte 0 báo hiệu kết thúc danh sách
+        if (name_len == 0) break;
 
-        // Nhận tên file dựa trên độ dài đã đọc
         char file_name[256];
         recv(client_sk, file_name, name_len, 0);
         file_name[name_len] = '\0';
 
-        // Nhận kích thước file (8 bytes - kiểu long)
         long file_size;
         recv(client_sk, &file_size, sizeof(long), 0);
 
-        printf("%-30s | %ld\n", file_name, file_size);
+        // Sửa định dạng in ở đây
+        printf("%s - %ld bytes\n", file_name, file_size);
     }
-
     printf("Đã nhận xong toàn bộ dữ liệu.\n");
 
     close(client_sk);
