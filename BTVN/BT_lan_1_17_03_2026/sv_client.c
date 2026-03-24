@@ -44,7 +44,7 @@ int main(int argc, char *argv[]) {
         getchar(); // Xóa bộ đệm
         printf("Nhập Họ tên: ");
         fgets(sv.ho_ten, sizeof(sv.ho_ten), stdin);
-        sv.ho_ten[strcspn(sv.ho_ten, "\n")] = 0; // Xóa \n
+        sv.ho_ten[strcspn(sv.ho_ten, "\n")] = 0; // Xóa ký tự xuống dòng
 
         printf("Nhập Ngày sinh (YYYY-MM-DD): ");
         scanf("%s", sv.ngay_sinh);

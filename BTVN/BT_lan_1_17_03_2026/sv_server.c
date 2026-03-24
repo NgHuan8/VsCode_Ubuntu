@@ -43,7 +43,7 @@ int main(int argc, char *argv[]) {
                 break;
             }
 
-            // Lấy thời gian hiện tại [cite: 17]
+            // Lấy thời gian hiện tại 
             time_t t = time(NULL);
             struct tm tm = *localtime(&t);
             char time_str[20];
