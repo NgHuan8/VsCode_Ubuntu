@@ -8,7 +8,7 @@
 #define FTP_SERVER "lebavui.io.vn"
 #define FTP_PORT 21
 #define USERNAME "user_20235338"
-#define PASSWORD "533825" // Thay XX bằng đúng 2 chữ số ngày sinh của bạn
+#define PASSWORD "533825" 
 
 // Hàm đảo ngược chuỗi ký tự
 void reverse_string(char *str, int len) {
